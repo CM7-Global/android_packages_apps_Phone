@@ -1852,16 +1852,18 @@ public class PhoneUtils {
      */
     private static void setMuteInternal(Phone phone, boolean muted) {
         if (DBG) log("setMuteInternal: " + muted);
-        Context context = phone.getContext();
-        boolean routeToAudioManager =
-            context.getResources().getBoolean(R.bool.send_mic_mute_to_AudioManager);
-        if (routeToAudioManager) {
-            AudioManager audioManager =
-                (AudioManager) phone.getContext().getSystemService(Context.AUDIO_SERVICE);
-            if (DBG) log("setMicrophoneMute: " + muted);
-            audioManager.setMicrophoneMute(muted);
-        } else {
-            phone.setMute(muted);
+        if (phone != null) {
+            Context context = phone.getContext();
+            boolean routeToAudioManager =
+                context.getResources().getBoolean(R.bool.send_mic_mute_to_AudioManager);
+            if (routeToAudioManager) {
+                AudioManager audioManager =
+                    (AudioManager) phone.getContext().getSystemService(Context.AUDIO_SERVICE);
+                if (DBG) log("setMuteInternal: using setMicrophoneMute(" + muted + ")...");
+                audioManager.setMicrophoneMute(muted);
+            } else {
+                if (DBG) log("setMuteInternal: using phone.setMute(" + muted + ")...");
+                phone.setMute(muted);
         }
         NotificationMgr.getDefault().updateMuteNotification();
     }

@@ -685,6 +685,9 @@ public class BluetoothHandsfree {
                 }
             }
 
+            /* phone not setup yet */
+            if (foregroundCall == null) return;
+
             switch(foregroundCall.getState()) {
             case ACTIVE:
                 call = 1;
